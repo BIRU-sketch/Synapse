@@ -2,8 +2,7 @@ import os
 import re
 from openai import OpenAI
 from dotenv import load_dotenv
-
-
+from typing import List,Any
 here = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 dot = os.path.join(here, '.env')
 if os.path.exists(dot):
@@ -14,7 +13,7 @@ def get_client():
         raise RuntimeError('OPENROUTER_API_KEY environment variable is not set')
     client = OpenAI(api_key=api_key, base_url='https://openrouter.ai/api/v1')
     return client
-def generate_chat_completion(prompt: str, model: str='google/gemma-3-27b-it', system_prompt: str | None=None):
+def generate_chat_completion(prompt: str, model: str='google/gemma-3-27b-it', system_prompt: bool | None=None):
     client = get_client()
     messages = []
     if system_prompt:
@@ -39,3 +38,13 @@ def get_download_link(item:str):
           f'Do not add additional text. Only return the url.')
     response=generate_chat_completion(task)
     return response
+def generate_chat_completions(prompt: List[str], model: str='google/gemma-3-27b-it:free'):
+    client = get_client()
+    content = []
+    for p in prompt:
+        content.append({'type':'text','text': p})
+    try:
+        response=client.chat.completions.create(model=model, messages=[{'role': 'user', 'content': content}])
+        return response.choices[0].message.content 
+    except Exception as e:
+        return response

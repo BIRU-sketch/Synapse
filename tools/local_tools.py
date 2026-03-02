@@ -5,7 +5,10 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 import shutil
-Tasks="""create_file(path) — Creates a new file at the specified path. Creates parent directories if needed.
+here = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+dot=os.path.join(here,'.env')
+def tools_list():
+    return """create_file(path) — Creates a new file at the specified path. Creates parent directories if needed.
 read_file(path) — Reads and returns the content of the specified file.
 write_file(path, content) — Writes the given content to the specified file. Overwrites existing content.
 delete_file(path) — Deletes the file or folder at the specified path.
@@ -14,9 +17,8 @@ list_directory(path) — Lists all files and folders inside the specified direct
 search_file_by_name(name, start_path) — Recursively searches for files with a name containing the given string starting from start_path. Returns a list of matches.
 copy_file(source, destination) — Copies a file from source to destination.
 copy_folder(source, destination) — Recursively copies a folder from source to destination.
-rename_file(source, new_name) — Renames a file or folder to the specified new name."""
-here = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-dot=os.path.join(here,'.env')
+rename_file(source, new_name) — Renames a file or folder to the specified new name.
+move_file(source_path, destination_path) - Moves a File or Folder from source_path to destination_path. Creates destination folder if it doesn't exist."""
 if os.path.exists(dot):
     load_dotenv(dot)
 DEFAULT_RESTRICTIONS = ['rm', 'shutdown', 'reboot', 'poweroff', 'format', 'del ', 'erase', ':(){', 'mkfs', 'dd ']
@@ -166,5 +168,17 @@ class FileSystemTools:
             items = [item.name for item in p.iterdir()]
             return FileSystemTools._response("success", items)
 
+        except Exception as e:
+            return FileSystemTools._response("error", None, str(e))
+    @staticmethod
+    def move_file(source: str, destination: str) -> Dict[str, Any]:
+        try:
+            src = Path(source)
+            dst = Path(destination)
+            if not src.exists():
+                return FileSystemTools._response("error", None, "Source file/folder does not exist.")
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(src), str(dst))
+            return FileSystemTools._response("success", f"Moved {source} to {destination}")
         except Exception as e:
             return FileSystemTools._response("error", None, str(e))
