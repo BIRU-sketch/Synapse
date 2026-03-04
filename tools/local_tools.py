@@ -8,7 +8,7 @@ import shutil
 here = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 dot=os.path.join(here,'.env')
 def tools_list():
-    return """create_file(path) — Creates a new file at the specified path. Creates parent directories if needed.
+    return """create_file(path) — Creates a new file at the specified path(path of the new file). Creates parent directories if needed.
 read_file(path) — Reads and returns the content of the specified file.
 write_file(path, content) — Writes the given content to the specified file. Overwrites existing content.
 delete_file(path) — Deletes the file or folder at the specified path.

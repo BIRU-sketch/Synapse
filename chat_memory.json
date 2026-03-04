@@ -1,23 +1,16 @@
 {
-    "plan_id": "move-skill-bridge2-to-downloads",
-    "mode": "tools",
+    "plan_id": "open_notepad_1",
+    "mode": "bash",
     "steps": [
         {
             "id": "1",
-            "tool": "move_file",
+            "tool": "bash",
             "params": {
-                "source_path": "skill-bridge2",
-                "destination_path": "{downloads}"
+                "command": "start notepad"
             },
-            "precondition": "The 'skill-bridge2' folder exists.",
-            "undo": {
-                "tool": "move_file",
-                "params": {
-                    "source_path": "{downloads}/skill-bridge2",
-                    "destination_path": "skill-bridge2"
-                }
-            }
+            "precondition": null,
+            "undo": null
         }
     ],
-    "explain": "Moves the 'skill-bridge2' folder to the Downloads directory."
+    "explain": "Open Notepad application."
 }

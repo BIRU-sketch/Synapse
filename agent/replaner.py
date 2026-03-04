@@ -55,6 +55,8 @@ def replan_task(error_message: str, failed_step_id: str) -> Dict[str, Any]:
     )
       try:
             response = generate_chat_completion(REPLANNER_PROMPT)
+            with open('chat_memory.json','w') as f:
+                  json.dump(response, f, indent=4)
             return response
       except Exception as e:
             return {"strategy": "restart"}

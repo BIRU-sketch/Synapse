@@ -1,4 +1,5 @@
 from typing import Dict, Any
+import platform
 import json,re
 try:
       from automations.openrouter_client import generate_chat_completion
@@ -35,6 +36,9 @@ Return a JSON object with the following structure:
 ## User request
 """+user_request+"""
 Return the plan as valid JSON only. Do not add any text outside the JSON.
+The os of the system is """+platform.system()+"""
+### Things to keep in mind:
+- If user mentions of a folder with out specifying the path, assume it's in the user's home directory (e.g. "downloads" -> "C:\\Users\\{username}\\Downloads)
 """
       try:
             response = generate_chat_completion(system_prompt)
