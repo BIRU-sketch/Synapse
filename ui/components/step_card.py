@@ -49,7 +49,7 @@ class StepCard(ctk.CTkFrame):
         if delete_callback is None:
             self.del_btn.pack_forget()
 
-        self.params_frame = ctk.CTkFrame(self, fg_color="#1f1f24")
+        self.params_frame = ctk.CTkFrame(self, fg_color="#232338")
         self.params_frame.pack(fill="x", padx=8, pady=(0,8))
 
         self.shell_entry = ctk.CTkEntry(self.params_frame, placeholder_text="bash command (single line). Use ; to chain.")
@@ -147,7 +147,7 @@ class StepCard(ctk.CTkFrame):
     def _on_hover(self, event):
 
         try:
-            self.configure(fg_color="#2e2e39")
+            self.configure(fg_color="#272730")
         except Exception:
             pass
 
