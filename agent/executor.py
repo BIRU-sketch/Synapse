@@ -7,7 +7,7 @@ try:
 except ImportError:
     from ..tools.local_tools import run_shell,FileSystemTools,Tasks
     from ..automations.openrouter_client import generate_chat_completion
-prompt = "open chrome"
+prompt = "use nmap to scan the local network"
 def execute_task(prompt: str):
     plan=plan_task(prompt)
     mode=plan.get('mode') or None
@@ -16,12 +16,18 @@ def execute_task(prompt: str):
         for step in steps:
             id=step.get('id')
             bash_command=step.get('params').get('command')
-            result=subprocess.run(bash_command,shell=True,capture_output=True,text=True,check=True)
-            if result.stdout == 0:
-                continue
-            else:
-                replan_result=replan_task(result,id)
-                execute_task(replan_result)
+            if bash_command.startswith('start'):
+                try:
+                    result=subprocess.run(bash_command,shell=True,capture_output=True,text=True,check=True)
+                except subprocess.CalledProcessError:
+                    print('failed to execute command')
+            else:    
+                result=subprocess.run(bash_command,shell=True,capture_output=True,text=True,check=True)
+                if result.stdout == 0:
+                    continue
+                else:
+                    replan_result=replan_task(result,id)
+                    execute_task(replan_result)
         return {'status':'success!'}
     elif mode == 'tools':
         for step in steps:

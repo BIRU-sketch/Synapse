@@ -39,6 +39,7 @@ Return the plan as valid JSON only. Do not add any text outside the JSON.
 The os of the system is """+platform.system()+"""
 ### Things to keep in mind:
 - If user mentions of a folder with out specifying the path, assume it's in the user's home directory (e.g. "downloads" -> "C:\\Users\\{username}\\Downloads)
+- If a certain step in the task can't be accomplished with the avilable tools, use bash mode with out hesitation, but always prefer tools when possible.
 """
       try:
             response = generate_chat_completion(system_prompt)
@@ -46,7 +47,7 @@ The os of the system is """+platform.system()+"""
             json_str = json.loads(match.group(1) if match else None)
             with open('chat_memory.json', 'w') as f:
                   json.dump(json_str, f, indent=4)
+            print(json_str)
             return json_str
       except Exception as e:
             return None
-plan_task("Move the skill-bridge2 folder to the Downloads directory.")

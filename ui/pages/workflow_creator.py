@@ -1,5 +1,7 @@
 import customtkinter as ctk
 from components.step_card import StepCard
+import json
+from pathlib import Path
 
 class WorkflowCreatorPage(ctk.CTkFrame):
     def __init__(self, parent):
@@ -17,6 +19,8 @@ class WorkflowCreatorPage(ctk.CTkFrame):
         self.mode_var = ctk.StringVar(value="offline")
         self.mode_menu = ctk.CTkOptionMenu(top, variable=self.mode_var, values=["offline","hybrid","online"], command=self.toggle_mode)
         self.mode_menu.pack(side="left", padx=(8,0))
+        self.save_btn = ctk.CTkButton(top,text="Save Workflow",width=140,command=self.save_workflow)
+        self.save_btn.pack(side="right", padx=(10,0))
 
         # AI prompt + generate button (hidden unless online mode)
         self.ai_frame = ctk.CTkFrame(self)
@@ -137,3 +141,42 @@ class WorkflowCreatorPage(ctk.CTkFrame):
             self.add_step_at(None, "after")
             card = self.steps[-1]
             card.load_from_dict(p)
+    def collect_workflow_data(self):
+        workflow = {
+            "name": self.workflow_name.get(),
+            "mode": self.mode_var.get(),
+            "steps": []
+            }
+        for step in self.steps:
+            step_type = step.mode_var.get()
+            if step_type == "Shell":
+                workflow["steps"].append({
+                    "type": "shell",
+                    "params": {
+                        "command": step.shell_entry.get()
+                        }
+                    })
+            elif step_type == "Local Tools":
+                workflow["steps"].append({
+                    "type": "tool",
+                    "tool": step.tool_dropdown.get(),
+                    "params": step.tool_params.get()
+                    })
+            elif step_type == "AI":
+                workflow["steps"].append({
+                    "type": "ai",
+                    "instruction": step.ai_entry.get()
+                    })
+        return workflow
+    def save_workflow(self):
+        data = self.collect_workflow_data()
+        workflow_name = data["name"].strip()
+        if not workflow_name:
+            print("Workflow must have a name")
+            return
+        save_dir = Path("workflows")
+        save_dir.mkdir(exist_ok=True)
+        filepath = save_dir / f"{workflow_name}.json"
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+            print(f"Workflow saved to {filepath}")

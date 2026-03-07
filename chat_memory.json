@@ -1,16 +1,16 @@
 {
-    "plan_id": "open_notepad_1",
+    "plan_id": "nmap_local_network_scan",
     "mode": "bash",
     "steps": [
         {
             "id": "1",
             "tool": "bash",
             "params": {
-                "command": "start notepad"
+                "command": "nmap -sn 192.168.1.0/24"
             },
             "precondition": null,
             "undo": null
         }
     ],
-    "explain": "Open Notepad application."
+    "explain": "This plan uses nmap to scan the local network (192.168.1.0/24) for available devices. It utilizes bash mode to execute the nmap command."
 }

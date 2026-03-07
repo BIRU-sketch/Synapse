@@ -54,9 +54,18 @@ def replan_task(error_message: str, failed_step_id: str) -> Dict[str, Any]:
     "Return JSON only. No markdown. No commentary."
     )
       try:
+            history={}
             response = generate_chat_completion(REPLANNER_PROMPT)
-            with open('chat_memory.json','w') as f:
-                  json.dump(response, f, indent=4)
-            return response
+            match = re.search(r"```(?:json)?\s*(.*?)\s*```", response, re.DOTALL)
+            json_str = json.loads(match.group(1) if match else None)
+            with open('chat_memory.json','r') as f:
+                  content=json.load(f)
+            key='new_plan'
+            for key in content.keys():
+                  history['previous_chat']=content
+                  history['previous_chat']['previous_plan']=content.get(key) or None
+            with open('plan.json','w') as f:
+                  json.dump(history, f, indent=4)
+            return json_str
       except Exception as e:
             return {"strategy": "restart"}

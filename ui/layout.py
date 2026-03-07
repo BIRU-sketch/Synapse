@@ -7,6 +7,7 @@ from pages.workflow_creator import WorkflowCreatorPage
 from pages.tools_page import ToolsPage
 from pages.agent_console import AgentConsolePage
 from pages.settings_page import SettingsPage
+from pages.workflows_page import WorkflowsPage
 
 
 class AppLayout(ctk.CTkFrame):
@@ -29,7 +30,8 @@ class AppLayout(ctk.CTkFrame):
             "workflow": WorkflowCreatorPage(self.page_container),
             "tools": ToolsPage(self.page_container),
             "agent": AgentConsolePage(self.page_container),
-            "settings": SettingsPage(self.page_container)
+            "settings": SettingsPage(self.page_container),
+            "Workflows": WorkflowsPage(self.page_container)
         }
 
         self.current_page = None
